@@ -1,0 +1,8 @@
+LICENSE
+setup.py
+pyprecip/__init__.py
+pyprecip/main.py
+pyprecip.egg-info/PKG-INFO
+pyprecip.egg-info/SOURCES.txt
+pyprecip.egg-info/dependency_links.txt
+pyprecip.egg-info/top_level.txt

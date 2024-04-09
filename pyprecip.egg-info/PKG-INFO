@@ -1,0 +1,24 @@
+Metadata-Version: 2.1
+Name: pyprecip
+Version: 0.0.1
+Summary: A climate data processing library.
+Home-page: https://github.com/ma0513207162/pyprecip
+Author: hasang
+Author-email: ma0513207162@163.com
+License: MIT
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Topic :: Software Development :: Libraries
+Requires-Python: >=3.7.0
+License-File: LICENSE
+
+# Example Package
+A climate data processing library.
+
+
+
+
