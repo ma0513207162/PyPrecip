@@ -2,7 +2,7 @@ from distutils.core import setup
 from setuptools import find_packages
 
 
-with open("readme.rst", "r") as f:
+with open("pypi_readme.rst", "r") as f:
     long_description = f.read()
 
 # Package meta-data.
