@@ -6,8 +6,6 @@ pyprecip 是一个用于处理气候数据的 Python 库。它提供了一系列
 
 受众群体：任何想要编写python脚本来进行气候数据处理的人
 
-相关项目： [MetPy、pygrib、iris、geopandas、cdsapi]([Your list / IndependentDevelopment (github.com)](https://github.com/stars/ma0513207162/lists/independentdevelopment))
-
 # 需求整理
 
 ## 一、基本功能的实现 
