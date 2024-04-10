@@ -1,29 +1,41 @@
-import pandas as pd 
-import os 
+import os, csv
 
+def read_excel(excel_path: str):
+    """
+    workbook = xlrd.open_workbook('test.xlsx')
+    sheet = workbook.sheet_by_name('Sheet1')
+    value = sheet.cell_value(1, 1)
 
-def read_excel(file_path):
-    data = pd.read_excel(file_path)
+    # 打印值
+    print(value)
+    """
     pass 
 
-def read_csv(file_path):
-    try:
-        data = pd.read_csv(filepath_or_buffer = file_path, index_col=['日期', '时间'] ,encoding='gb18030' )
-        result = data.loc["2023/3/1"]    
-        return result.iterrows()
 
-    except FileNotFoundError:
-        print(f"文件 {file_path} 不存在")
-    except PermissionError:
-        print(f"无权限读取文件 {file_path}")
-    except Exception as e:
-        print(f"读取文件 {file_path} 时发生错误: {str(e)}")
+def read_csv(csv_path: str) -> list:
+    if not os.path.exists(csv_path):  
+        raise FileExistsError
 
+    reader_list: list = []
+    with open(csv_path, "r") as csv_file:
+        reader = csv.reader(csv_file)           # reader object 
+        reader_list = list(reader)
+        
+    return reader_list
 
 
-if __name__ == "__main__": 
-    file_path = "./static/weather_data.csv"
-    read_result = read_csv(file_path)
+
+
+
+
+
+
+
+
+    
+   
+    
+
 
     
 
