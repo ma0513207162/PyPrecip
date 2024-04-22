@@ -1,4 +1,6 @@
+from openpyxl import load_workbook
 import os, csv
+
 
 def file_exists(func):
     def wrapper(*args, **kwargs):
@@ -10,16 +12,18 @@ def file_exists(func):
 
 
 
-def excel_to_csv(excel_path: str) -> str:
-    pass 
-
 @file_exists
-def read_excel(excel_path: str) -> list:
+def read_excel(excel_path: str, sheet_name: str = "Sheet1") -> list:
     reader_list:list = []
 
-    with open(excel_path, "r") as excel_file:
-        result = excel_file.read()
-        print(result)
+    workbook = load_workbook(filename = excel_path)
+    sheet = workbook[sheet_name]
+
+    for row in sheet.iter_rows(min_row=1, max_row=1, min_col=1, max_col=1):
+        for cell in row:
+            print(cell.value)
+
+
 
 
 @file_exists
