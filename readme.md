@@ -1,4 +1,4 @@
-# pyprecip 相关记录
+# pyprecip 科学计算
 
 pyprecip 是一个用于处理气候数据的 Python 库。它提供了一系列功能，可以帮助您轻松地读取、处理、分析和可视化气候数据。
 
@@ -12,7 +12,7 @@ pyprecip 是一个用于处理气候数据的 Python 库。它提供了一系列
 
 ### 1、数据读取
 
-- 支持读取各种格式的气候数据文件，例如：NetCDF、GRIB、HDF、HDF5、CSV、Excel
+- 支持读取各种格式的气候数据文件以及映射导出，例如：CSV、Excel、NetCDF、GRIB、HDF、HDF5
 - 支持从气象数据 API 中读取数据，例如：NOAA API、NCEI API、Copernicus API
 - 支持多种数据来源,如地面站点观测、卫星遥感、模型输出等
 - 输入指定的行政区划代码、时间、获取实时的气候数据，支持转换不同的样式在终端显示输出 
