@@ -1,5 +1,6 @@
 from openpyxl import load_workbook
-import os, csv, numpy
+from typing import List 
+import os, csv
 
 
 def file_exists(func):
@@ -11,9 +12,8 @@ def file_exists(func):
     return wrapper
 
 
-
 @file_exists
-def read_excel(excel_path: str, sheet_name: str = "Sheet1") -> list:
+def read_excel(excel_path: str, sheet_name: str = "Sheet1") -> List[List[str]]:
     """
     How to read an excel file
     - excel_path (str): specifies the path to the excel file
@@ -21,7 +21,7 @@ def read_excel(excel_path: str, sheet_name: str = "Sheet1") -> list:
     list: Returns a two-dimensional list of read completions
     """
     
-    reader_list:list = []
+    reader_list:List[List[str]] = []
 
     workbook = load_workbook(filename = excel_path, data_only=True)
     sheet = workbook[sheet_name]
@@ -32,16 +32,15 @@ def read_excel(excel_path: str, sheet_name: str = "Sheet1") -> list:
     return reader_list; 
 
                 
-
 @file_exists
-def read_csv(csv_path: str) -> list:
+def read_csv(csv_path: str) -> List[List[str]]:
     """
     How to read a csv file
     -csv_path (str): indicates the path of the csv file
     list: Returns a two-dimensional list of read completions
     """
 
-    reader_list: list = []
+    reader_list: List[List[str]] = []; 
 
     with open(csv_path, "r") as csv_file:
         reader = csv.reader(csv_file)          
@@ -55,7 +54,10 @@ if __name__ == "__main__":
     # reader_list = read_csv(csv_path);
 
     excel_path = "./static/test_data.xlsx"
-    read_excel(excel_path);  
+    reader_list = read_excel(excel_path)
+    print(reader_list)
+
+
 
 
     
