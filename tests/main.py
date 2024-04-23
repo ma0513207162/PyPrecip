@@ -1,13 +1,14 @@
 import sys
 
 sys.path.append("../pyprecip")
-import pyprecip as precip 
+from pyprecip.reading.read_file import read_excel
 
 
 
 if __name__ == "__main__": 
-    csv_path = "./static/weather_data.csv"
-    # print(precip.read_csv(csv_path))
+    result = read_excel("./static/test_data.xlsx"); 
+
+    print(result)    
 
 
 
