@@ -2,18 +2,17 @@ from openpyxl import load_workbook
 from typing import List 
 import os, csv
 
-
 def file_exists(func):
     def wrapper(*args, **kwargs):        
         if not args:
             raise TypeError("path argument is required"); 
-        
         file_path = args[0]
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File '{file_path}' does not exist")
         return func(*args, **kwargs)
     return wrapper
 
+      
 
 
 @file_exists
@@ -27,10 +26,10 @@ def read_excel(path: str, sheet_name: str = "Sheet1") -> List[List[str]]:
     
     reader_list:List[List[str]] = []
 
-    workbook = load_workbook(filename = path, data_only=True)
+    workbook = load_workbook(filename = path, data_only = True)
     sheet = workbook[sheet_name]
 
-    for row in sheet.iter_rows(values_only=True):
+    for row in sheet.iter_rows(values_only = True):
         reader_list.append(list(row))
 
     return reader_list; 
