@@ -4,14 +4,19 @@ import os, csv
 
 def file_exists(func):
     def wrapper(*args, **kwargs):        
-        if not args:
-            raise TypeError("path argument is required"); 
+        if not args and not kwargs:
+            raise TypeError("path argument is required")  
+        parameters = args + tuple(kwargs.values())
+        for parm in parameters:
+            if not isinstance(parm, str): 
+                raise TypeError("The parameter type must be str")
+            
         file_path = args[0]
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File '{file_path}' does not exist")
         return func(*args, **kwargs)
     return wrapper
-
+    
 
 @file_exists
 def read_excel(path: str, sheet_name: str = "Sheet1") -> List[List[str]]:
@@ -49,11 +54,8 @@ def read_csv(path: str) -> List[List[str]]:
     
 
 if __name__ == "__main__": 
-    # path = "./static/weather_data.csv"
-    # reader_list = read_csv(path);
     path = "./static/test_data.xlsx"
-    reader_list = read_excel(path)
-    # print(reader_list)
+    reader_list = read_excel()
 
 
 
