@@ -12,8 +12,6 @@ def file_exists(func):
         return func(*args, **kwargs)
     return wrapper
 
-      
-
 
 @file_exists
 def read_excel(path: str, sheet_name: str = "Sheet1") -> List[List[str]]:

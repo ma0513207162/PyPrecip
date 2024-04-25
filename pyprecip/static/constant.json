@@ -1,0 +1,8 @@
+{
+    "READ_API": {
+        "WEATHER_URL": "https://restapi.amap.com/v3/weather/weatherInfo", 
+        "LOCATION_URL": "https://restapi.amap.com/v3/ip?parameters", 
+        "WEATHER_KEY": "d81aece9933c31b8c15920517061581b", 
+        "LOCATION_KEY": "96bc32e8ed4c3c578fefcd25774114ee"
+    }
+}
