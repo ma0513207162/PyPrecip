@@ -9,7 +9,7 @@ def get_weather_data(area_code: int = -1, forecasts: bool = False) -> dict:
         
     request_result: dict = {}
     with open("./static/constant.json", "r") as file:
-        READ_API_DATA = json.load(file)["READ_API"]    
+        READ_API_DATA: dict = json.load(file)["READ_API"]    
 
     if area_code == -1:
         URL: str = READ_API_DATA["LOCATION_URL"]

@@ -1,77 +1,91 @@
 from openpyxl import load_workbook
-from typing import List 
-import os, csv
+from csv import reader
 
 def file_exists(func):
     def wrapper(*args, **kwargs):        
         if not args and not kwargs:
-            raise TypeError("path argument is required")  
-        parameters = args + tuple(kwargs.values())
-        for parm in parameters:
-            if not isinstance(parm, str): 
-                raise TypeError("The parameter type must be str")
-            
-        file_path = args[0]
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"File '{file_path}' does not exist")
+            raise TypeError("The file path is required.")  
         return func(*args, **kwargs)
     return wrapper
-    
+
 
 @file_exists
-def read_excel(path: str, sheet_name: str = "Sheet1") -> List[List[str]]:
-    """
-    How to read an excel file
-    - path (str): specifies the path to the excel file
-    - sheet_name (str): indicates the name of an excel table, The default value is Sheet1
-    list: Returns a two-dimensional list of read completions
-    """
+def read_csv(path: str, row: tuple = (), column: tuple = ()):
+    reader_dict = {}; 
     
-    reader_list:List[List[str]] = []
-
-    workbook = load_workbook(filename = path, data_only = True)
-    sheet = workbook[sheet_name]
-
-    for row in sheet.iter_rows(values_only = True):
-        reader_list.append(list(row))
-
-    return reader_list; 
-
-                
-@file_exists
-def read_csv(path: str) -> List[List[str]]:
-    """
-    How to read a csv file
-    -path (str): indicates the path of the csv file
-    list: Returns a two-dimensional list of read completions
-    """
-    reader_list: List[List[str]] = []; 
-
     with open(path, "r") as csv_file:
-        reader_list = list(csv.reader(csv_file))      
+        reader_dict = list(reader(csv_file))      
         
-    return reader_list
-    
+    return reader_dict 
 
+
+@file_exists
+def read_excel(path: str, sheet_names: tuple = (), 
+      rows_range: tuple = (), columns_range: tuple = (), 
+      row_indices: tuple = (), column_indices: tuple = ()) -> dict:
+    """
+    - sheet_names: 工作表序列
+    - rows_range: 行范围、 - columns_range: 列范围 
+    - row_indices: 指定行的索引序列、 - column_indices: 指定列的索引序列 
+    """
+    workbook = load_workbook(filename = path, data_only = True)
+
+    # 获取指定的工作表
+    sheet_list = []
+    if sheet_names != ():
+        for sheet_name in sheet_names:
+            sheet_list.append(workbook[sheet_name])
+    else:
+        sheet_list.append(workbook.active)
+    
+    # 读取指定的范围，用元组进行指定 
+    if rows_range == (): rows_range = (1, 0); 
+    if columns_range == (): columns_range = (1, 0);  
+
+    reader_dict: dict = {} 
+    for sheet in sheet_list:
+        # rows_range columns_range 
+        sheet_iter_rows  = sheet.iter_rows(min_row = rows_range[0], max_row = rows_range[1],
+            min_col = columns_range[0], max_col = columns_range[1], values_only = True) 
+        sheet_iter_rows: list = list(sheet_iter_rows)           
+
+        # row_indices column_indices
+        if row_indices != (): 
+            temp_iter_rows = []
+            for idx in row_indices:
+                if idx > 0 and len(sheet_iter_rows) > idx:
+                    temp_iter_rows.append(sheet_iter_rows[idx-1]) 
+            sheet_iter_rows = temp_iter_rows
+
+
+        if column_indices == ():
+            temp_row_list = [] 
+            for row in sheet_iter_rows:
+                temp_row_list.append(list(row))
+            reader_dict[sheet.title] = temp_row_list;
+        else:
+            temp_col_list = [] 
+            for row in sheet_iter_rows:
+                temp_list = []
+                for idx in column_indices:
+                    temp_list.append(row[idx-1]) 
+                temp_col_list.append(temp_list)
+            reader_dict[sheet.title] = temp_col_list
+    return reader_dict
+
+
+    
+# 以主进程的方式运行 
 if __name__ == "__main__": 
-    path = "./static/test_data.xlsx"
-    reader_list = read_excel()
+    path = "./static/files/weather_data.xlsx"
+    reader_dict = read_excel(path, sheet_names= ("Sheet1", "Sheet2"), 
+                            rows_range=(1, 10), columns_range=(1,5), 
+                            row_indices= (1), column_indices=(1))    
 
-
-
-
-    
-    
-
-
-
-
-
-
-
-
-
-
+    for item in reader_dict:
+        for value in reader_dict[item]:
+            print(value)
+        print("=" * 60)
     
    
     
