@@ -1,5 +1,11 @@
 import requests, json 
 
+class ReadAPi:
+    def __init__(self) -> None:
+        pass
+    
+
+
 
 def get_weather_data(area_code: int = -1, forecasts: bool = False) -> dict:
     if type(area_code) != int:
