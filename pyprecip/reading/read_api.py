@@ -1,11 +1,5 @@
 import requests, json 
 
-class ReadAPi:
-    def __init__(self) -> None:
-        pass
-    
-
-
 
 def get_weather_data(area_code: int = -1, forecasts: bool = False) -> dict:
     if type(area_code) != int:
@@ -22,7 +16,7 @@ def get_weather_data(area_code: int = -1, forecasts: bool = False) -> dict:
         PARAMS: dict = { "key": READ_API_DATA["LOCATION_KEY"] }
         response = requests.get(URL, params = PARAMS)
         location_data: dict = response.json()
-        
+
         if location_data["status"] == '1' and location_data["infocode"] == "10000":
             area_code = location_data["adcode"]
             request_result["area_code"] = location_data["adcode"]
@@ -59,6 +53,11 @@ def get_weather_data(area_code: int = -1, forecasts: bool = False) -> dict:
     else:
         raise Exception("An unknown error occurred in the climate data request. Please try again later")
     
+
+def get_precipitation_data():
+    print("hello,world")
+
+
 
 if __name__ == "__main__":
     result = get_weather_data()
