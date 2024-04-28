@@ -55,6 +55,8 @@ def get_weather_data(area_code: int = -1, forecasts: bool = False) -> dict:
     
 
 if __name__ == "__main__":
-    get_weather_data()
+    result = get_weather_data()
+
+    print(result)
 
 
