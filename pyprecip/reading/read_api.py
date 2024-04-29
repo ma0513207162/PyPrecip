@@ -1,9 +1,11 @@
-import requests, json 
+import requests, json, warnings
 from requests.exceptions import Timeout, RequestException 
 
 def raise_exception(message = "error", exception_type = Exception):
-    
-    raise exception_type(message) 
+    raise exception_type(message)  
+
+def raise_warning(message = "warnning", warning_type = Warning):
+    warnings.warn(message, warning_type)
 
 
 def send_request(URL: str, PARAMS: dict):
@@ -23,6 +25,27 @@ def send_request(URL: str, PARAMS: dict):
         raise_exception("Maximum number of retries reached, giving up.", RequestException)
 
 
+def get_area_code(area_name: str = ""):
+    """
+    with open("./static/constant.json", "r", encoding="utf-8") as file:
+        READ_API_DATA: dict = json.load(file)["READ_API"]    
+    DUP_PLACE_NAMES = READ_API_DATA["DUP_PLACE_NAMES"]
+    """
+
+    if area_name != "":
+        with open("./static/city_code.json", "r", encoding="utf-8") as file:
+            city_code_table: dict = json.load(file)
+        try:
+            area_code = city_code_table[area_name] 
+            if isinstance(area_code, list):  return area_code
+            else: return int(area_code) 
+        except KeyError:
+            # city_code_keys = city_code_table.keys() 
+            raise_exception(f"There is no city with the status of {area_name}.", KeyError)
+    else:
+        raise_exception("area_name parameter cannot be null or invalid.", ValueError) 
+
+
 def get_weather_data(area_code: int = -1, area_name: str = "", forecasts: bool = False) -> dict:
     if not isinstance(area_code, int):
         raise_exception("area_code parameter must be of type int.", TypeError)
@@ -32,10 +55,12 @@ def get_weather_data(area_code: int = -1, area_name: str = "", forecasts: bool =
         raise_exception("forecasts parameter must be of type bool.", TypeError)
             
     request_result: dict = {}
-    with open("./static/constant.json", "r") as file:
+    with open("./static/constant.json", "r", encoding="utf-8") as file:
         READ_API_DATA: dict = json.load(file)["READ_API"]    
 
-    if area_code == -1:
+    # 自动获取当前位置、根据地名获取区域编码 
+    if area_code == -1 and area_name == "":
+        # 自动获取当前的位置 
         URL: str = READ_API_DATA["LOCATION_URL"]
         PARAMS: dict = { "key": READ_API_DATA["LOCATION_KEY"] }
 
@@ -48,7 +73,17 @@ def get_weather_data(area_code: int = -1, area_name: str = "", forecasts: bool =
             request_result["area_code"] = location_data["adcode"]
         else:
             raise_exception("An unknown error occurred with the ip location request. Please try again later", RequestException)
+    elif area_code == -1 and area_name != "": 
+        get_result = get_area_code(area_name)
+        if isinstance(get_result, list):  
+            raise_warning(f"The place name has multiple regional codes:{get_result},the first one is selected by default.")
+            area_code = get_result[0] 
+        else: 
+            area_code = get_result
+        request_result["area_code"] = area_code
     else:
+        if area_name != "": 
+            raise_warning("The area_code parameter overrides the effect of the area_name parameter.")
         request_result["area_code"] = area_code
 
     # 请求实时/未来的气候数据 
@@ -79,34 +114,9 @@ def get_weather_data(area_code: int = -1, area_name: str = "", forecasts: bool =
         return request_result                    
     else:
         raise_exception("An unknown error occurred in the climate data request. Please try again later", RequestException)
-    
 
-def get_area_code(area_name: str):
-    with open("./static/constant.json", "r", encoding="utf-8") as file:
-        READ_API_DATA: dict = json.load(file)["READ_API"]    
-    DUP_PLACE_NAMES = READ_API_DATA["DUP_PLACE_NAMES"]
-
-    if area_name != "":
-        with open("./static/city_code.json", "r", encoding="utf-8") as file:
-            city_code: dict = json.load(file)
-        city_code_keys = list(city_code.keys()) 
-        city_code_values = list(city_code.values())
-        
-        if len(city_code_keys) == len(city_code_values): 
-            if area_name in DUP_PLACE_NAMES:
-                # 地名不是唯一的 
-                pass 
-            else:
-                # 地名是唯一的 
-                index_ = city_code_values.index(area_name)
-                return city_code_keys[index_]
-        else:
-            raise_exception("Unknown error: len(city_code_keys) != len(city_code_values)");
-    else:
-        raise_exception("area_name parameter cannot be null or invalid.", ValueError)
 
 
 if __name__ == "__main__":
-    result = get_area_code("汕头市")
-
-
+    result = get_weather_data(area_name="朝阳区")
+    print(result) 
