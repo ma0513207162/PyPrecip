@@ -1,12 +1,29 @@
 import requests, json 
+from requests.exceptions import Timeout, RequestException 
+
+def send_request(URL: str, PARAMS: dict):
+    MAX_RETRIES = 3     # 最大重试次数 
+    retry_count = 0     
+
+    while retry_count < MAX_RETRIES:
+        try:
+            response = requests.get(URL, params = PARAMS, timeout = 10)
+            if response.status_code == 200: return response
+        except Timeout:
+            retry_count += 1 
+            print(f"Request timed out, retrying... (Attempt {retry_count}/{MAX_RETRIES})")
+        except RequestException as e:
+            raise RequestException(f"An error occurred: {e}")
+    else:
+        raise RequestException("Maximum number of retries reached, giving up.")
 
 
 def get_weather_data(area_code: int = -1, forecasts: bool = False) -> dict:
     if type(area_code) != int:
         raise TypeError("The area_code parameter type must be int.") 
-    elif type(forecasts) != bool:
+    if type(forecasts) != bool:
         raise TypeError("The type of forecasts parameter must be bool.") 
-        
+            
     request_result: dict = {}
     with open("./static/constant.json", "r") as file:
         READ_API_DATA: dict = json.load(file)["READ_API"]    
@@ -14,14 +31,16 @@ def get_weather_data(area_code: int = -1, forecasts: bool = False) -> dict:
     if area_code == -1:
         URL: str = READ_API_DATA["LOCATION_URL"]
         PARAMS: dict = { "key": READ_API_DATA["LOCATION_KEY"] }
-        response = requests.get(URL, params = PARAMS)
+
+        # 发送 request 请求 
+        response = send_request(URL, PARAMS)            
         location_data: dict = response.json()
 
         if location_data["status"] == '1' and location_data["infocode"] == "10000":
             area_code = location_data["adcode"]
             request_result["area_code"] = location_data["adcode"]
         else:
-            raise Exception("An unknown error occurred with the ip location request. Please try again later")
+            raise RequestException("An unknown error occurred with the ip location request. Please try again later")
     else:
         request_result["area_code"] = area_code
 
@@ -29,9 +48,10 @@ def get_weather_data(area_code: int = -1, forecasts: bool = False) -> dict:
     WEATHER_URL = READ_API_DATA["WEATHER_URL"]
     WEATHER_KEY = READ_API_DATA["WEATHER_KEY"]
     ext_type = "base" if forecasts == False else "all" 
-    PARAMS = {"city": area_code,  "key": WEATHER_KEY, "extensions": ext_type}
-
-    response = requests.get(WEATHER_URL, params = PARAMS); 
+    WEA_PARAMS = {"city": area_code,  "key": WEATHER_KEY, "extensions": ext_type}
+        
+    # 发送 request 请求
+    response = send_request(WEATHER_URL, WEA_PARAMS)            
     weather_data = response.json()
 
     if weather_data["status"] == '1' and weather_data["infocode"] == '10000':
@@ -51,17 +71,13 @@ def get_weather_data(area_code: int = -1, forecasts: bool = False) -> dict:
         
         return request_result                    
     else:
-        raise Exception("An unknown error occurred in the climate data request. Please try again later")
+        raise RequestException("An unknown error occurred in the climate data request. Please try again later")
     
-
-def get_precipitation_data():
-    print("hello,world")
 
 
 
 if __name__ == "__main__":
-    result = get_weather_data()
-
+    result = get_weather_data(forecasts= True)
     print(result)
 
 
