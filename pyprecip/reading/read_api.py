@@ -1,5 +1,7 @@
 import requests, json
 from requests.exceptions import Timeout, RequestException 
+from utils.exception_ import CustomException 
+from utils.warning_ import CustomWarn 
 
 
 def send_request(URL: str, PARAMS: dict):
@@ -111,10 +113,5 @@ def get_weather_data(area_code: int = -1, area_name: str = "", forecasts: bool =
 
 
 
-
-
 if __name__ == "__main__":
-    from utils.exception_ import CustomException 
-
-    exc = CustomException()  
-    print(exc)
+    print(CustomWarn) 
