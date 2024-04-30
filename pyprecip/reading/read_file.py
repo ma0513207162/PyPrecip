@@ -46,7 +46,7 @@ def read_excel(file_path: str, sheet_names: tuple = (),
                 else:
                     raise IndexError("The index must be greater than 0 and less than the sequence length.");
             sheet_iter_rows = temp_iter_rows
-        
+                                        
         # 封装二维序列返回
         if column_indices == ():
             temp_row_list = [] 
@@ -129,12 +129,12 @@ def read_csv(file_path: str, row_range: tuple = (), column_range: tuple = (),
 # 以主进程的方式运行 
 if __name__ == "__main__": 
     path = "./static/files/weather_data.csv"
-    read_excel_result = read_csv(path, row_range=(1,10), column_range=(1,5), 
-                                 row_indices=(1,2,3), column_indices=(2,3,4)) 
+    # read_excel_result = read_csv(path, row_range=(1,10), column_range=(1,5), 
+    #                              row_indices=(1,2,3), column_indices=(2,3,4)) 
 
-    for key in read_excel_result:
-        for value in read_excel_result[key]:
-            print(value) 
+    # for key in read_excel_result:
+    #     for value in read_excel_result[key]:
+    #         print(value) 
 
     
     

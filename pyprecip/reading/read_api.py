@@ -1,11 +1,5 @@
-import requests, json, warnings
+import requests, json
 from requests.exceptions import Timeout, RequestException 
-
-def raise_exception(message = "error", exception_type = Exception):
-    raise exception_type(message)  
-
-def raise_warning(message = "warnning", warning_type = Warning):
-    warnings.warn(message, warning_type)
 
 
 def send_request(URL: str, PARAMS: dict):
@@ -62,7 +56,7 @@ def get_weather_data(area_code: int = -1, area_name: str = "", forecasts: bool =
     if area_code == -1 and area_name == "":
         # 自动获取当前的位置 
         URL: str = READ_API_DATA["LOCATION_URL"]
-        PARAMS: dict = { "key": READ_API_DATA["LOCATION_KEY"] }
+        PARAMS: dict = { "key": READ_API_DATA["WEATHER_KEY"] }
 
         # 发送 request 请求 
         response = send_request(URL, PARAMS)            
@@ -92,7 +86,7 @@ def get_weather_data(area_code: int = -1, area_name: str = "", forecasts: bool =
     ext_type = "base" if forecasts == False else "all" 
     WEA_PARAMS = {"city": area_code,  "key": WEATHER_KEY, "extensions": ext_type}
         
-    # 发送 request 请求
+    # 发送 http 请求
     response = send_request(WEATHER_URL, WEA_PARAMS)            
     weather_data = response.json()
 
@@ -117,6 +111,10 @@ def get_weather_data(area_code: int = -1, area_name: str = "", forecasts: bool =
 
 
 
+
+
 if __name__ == "__main__":
-    result = get_weather_data(area_name="朝阳区")
-    print(result) 
+    from utils.exception_ import CustomException 
+
+    exc = CustomException()  
+    print(exc)
