@@ -1,6 +1,8 @@
 LICENSE
 setup.py
 pyprecip/__init__.py
+pyprecip/package_tools.py
+pyprecip/units_.py
 pyprecip.egg-info/PKG-INFO
 pyprecip.egg-info/SOURCES.txt
 pyprecip.egg-info/dependency_links.txt
@@ -8,8 +10,4 @@ pyprecip.egg-info/top_level.txt
 pyprecip/reading/__init__.py
 pyprecip/reading/read_api.py
 pyprecip/reading/read_file.py
-pyprecip/reading/test.py
-pyprecip/utils/__init__.py
-pyprecip/utils/exception_.py
-pyprecip/utils/export_.py
-pyprecip/utils/warning_.py
+tests/test_.py
