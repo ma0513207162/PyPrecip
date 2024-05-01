@@ -1,22 +1,7 @@
-import requests, json
-from requests.exceptions import Timeout, RequestException 
-
-
-def send_request(URL: str, PARAMS: dict):
-    MAX_RETRIES = 3     # 最大重试次数 
-    retry_count = 0     
-
-    while retry_count < MAX_RETRIES:
-        try:
-            response = requests.get(URL, params = PARAMS, timeout = 10)
-            if response.status_code == 200: return response
-        except Timeout:
-            retry_count += 1 
-            print(f"Request timed out, retrying... (Attempt {retry_count}/{MAX_RETRIES})")
-        except RequestException as e:
-            raise_exception(f"An error occurred: {e}", RequestException)
-    else:
-        raise_exception("Maximum number of retries reached, giving up.", RequestException)
+import json
+from requests.exceptions import RequestException 
+from ..utits.exwarn import raise_exception, raise_warning
+from ..utits.http import send_request 
 
 
 def get_area_code(area_name: str = ""):
@@ -112,4 +97,9 @@ def get_weather_data(area_code: int = -1, area_name: str = "", forecasts: bool =
 
 
 if __name__ == "__main__":
-    print(CustomWarn) 
+    result = get_weather_data() 
+    
+    for item in result:
+        for idx in result[item]:
+            print(idx) 
+
