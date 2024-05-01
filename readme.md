@@ -12,7 +12,9 @@ pyprecip 是一个专注于气候数据处理的 Python 库，旨在为用户提
 pip install pyprecip
 ```
 
-
-
 # 使用
+
+```shell
+python -B -m pyprecip.xxx.xxx
+```
 

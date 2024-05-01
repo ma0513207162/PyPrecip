@@ -4,41 +4,53 @@ from ..utits.exwarn import raise_exception, raise_warning
 from ..utits.http import send_request 
 
 
-def get_area_code(area_name: str = ""):
-    """
-    with open("./static/constant.json", "r", encoding="utf-8") as file:
-        READ_API_DATA: dict = json.load(file)["READ_API"]    
-    DUP_PLACE_NAMES = READ_API_DATA["DUP_PLACE_NAMES"]
-    """
+def get_address_info(address: str = "", city: str = None):
+    if address != "":
+        with open("./pyprecip/static/constant.json", "r", encoding="utf-8") as file:
+            READ_API_DATA: dict = json.load(file)["READ_API"]    
 
-    if area_name != "":
-        with open("./static/city_code.json", "r", encoding="utf-8") as file:
-            city_code_table: dict = json.load(file)
-        try:
-            area_code = city_code_table[area_name] 
-            if isinstance(area_code, list):  return area_code
-            else: return int(area_code) 
-        except KeyError:
-            # city_code_keys = city_code_table.keys() 
-            raise_exception(f"There is no city with the status of {area_name}.", KeyError)
+        GEOCODING_URL: str = READ_API_DATA["GEOCODING_URL"]
+        PARAMS: dict = { 
+            "key": READ_API_DATA["WEATHER_KEY"], 
+            "address": address,  "city": city
+        }
+
+        # 发送 request 请求 
+        response = send_request(GEOCODING_URL, PARAMS)   
+        address_info: dict = response.json()
+
+        if address_info["status"] == "1" and address_info["infocode"] == "10000":
+            if int(address_info["count"]) > 1:
+                raise_warning(f"The place name has multiple regional codes: {address}, the first one is selected by default.")
+
+            geocodes_adcode = address_info["geocodes"][0]["adcode"]
+            return geocodes_adcode
+        else:
+            except_address_info: str = address_info["info"]; 
+            raise_exception(f"An unknown error occurred in the address request. {except_address_info} \
+                             Please try again later", RequestException)
+
     else:
-        raise_exception("area_name parameter cannot be null or invalid.", ValueError) 
+        raise_exception("address parameter cannot be null or invalid.", ValueError) 
 
 
-def get_weather_data(area_code: int = -1, area_name: str = "", forecasts: bool = False) -> dict:
+def get_weather_data(area_code: int = -1, address: str = "", 
+                     city: str = "", forecasts: bool = False) -> dict:
     if not isinstance(area_code, int):
         raise_exception("area_code parameter must be of type int.", TypeError)
-    if not isinstance(area_name, str):
-        raise_exception("area_name parameter must be of type str.", TypeError)
+    if not isinstance(address, str):
+        raise_exception("address parameter must be of type str.", TypeError)
+    if not isinstance(city, str):
+        raise_exception("city parameter must be of type str.", TypeError) 
     if not isinstance(forecasts, bool): 
         raise_exception("forecasts parameter must be of type bool.", TypeError)
-            
+
     request_result: dict = {}
-    with open("./static/constant.json", "r", encoding="utf-8") as file:
+    with open("./pyprecip/static/constant.json", "r", encoding="utf-8") as file:
         READ_API_DATA: dict = json.load(file)["READ_API"]    
 
     # 自动获取当前位置、根据地名获取区域编码 
-    if area_code == -1 and area_name == "":
+    if area_code == -1 and address == "":
         # 自动获取当前的位置 
         URL: str = READ_API_DATA["LOCATION_URL"]
         PARAMS: dict = { "key": READ_API_DATA["WEATHER_KEY"] }
@@ -52,17 +64,12 @@ def get_weather_data(area_code: int = -1, area_name: str = "", forecasts: bool =
             request_result["area_code"] = location_data["adcode"]
         else:
             raise_exception("An unknown error occurred with the ip location request. Please try again later", RequestException)
-    elif area_code == -1 and area_name != "": 
-        get_result = get_area_code(area_name)
-        if isinstance(get_result, list):  
-            raise_warning(f"The place name has multiple regional codes:{get_result},the first one is selected by default.")
-            area_code = get_result[0] 
-        else: 
-            area_code = get_result
+    elif area_code == -1 and address != "": 
+        area_code = get_address_info(address=address, city=city)
         request_result["area_code"] = area_code
     else:
-        if area_name != "": 
-            raise_warning("The area_code parameter overrides the effect of the area_name parameter.")
+        if address != "": 
+            raise_warning("The area_code parameter overrides the effect of the address parameter.")
         request_result["area_code"] = area_code
 
     # 请求实时/未来的气候数据 
@@ -97,9 +104,6 @@ def get_weather_data(area_code: int = -1, area_name: str = "", forecasts: bool =
 
 
 if __name__ == "__main__":
-    result = get_weather_data() 
+    result = get_weather_data(address="青山区") 
     
-    for item in result:
-        for idx in result[item]:
-            print(idx) 
-
+    print(result)

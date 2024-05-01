@@ -2,12 +2,8 @@
     "READ_API": {
         "WEATHER_URL": "https://restapi.amap.com/v3/weather/weatherInfo", 
         "LOCATION_URL": "https://restapi.amap.com/v3/ip?parameters", 
-        "WEATHER_KEY": "d81aece9933c31b8c15920517061581b", 
-        "DUP_PLACE_NAMES": [
-            "桥西区", "新华区", "城区", "和平区", "铁西区", "朝阳区", "铁东区", "向阳区", "郊区", 
-            "西安区", "宝山区", "鼓楼区", "通州区", "海州区", "普陀区", "西湖区", "市中区", 
-            "河东区", "青山区", "永定区", "南山区", "龙华区", "南沙区", "江北区", "白云区", 
-            "新城区", "长安区", "城关区", "城中区", "东区"
-        ]
+        "GEOCODING_URL": "https://restapi.amap.com/v3/geocode/geo?parameters", 
+        "WEATHER_KEY": "d81aece9933c31b8c15920517061581b"
+        
     }
 }
