@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
-Name: pyprecip
-Version: 0.0.3
+Name: PyPrecip
+Version: 0.0.6
 Summary: A climate data processing library.
 Home-page: https://github.com/ma0513207162/pyprecip
 Author: hasang

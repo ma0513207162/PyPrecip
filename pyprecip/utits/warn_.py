@@ -10,7 +10,7 @@ class RaiseWarn():
     def custom_formatwarning(self, message_, category_, filename, lineno, line):
         custom_format = f"PyPrecip {category_.__name__}: {message_} ({filename}:{lineno})\n"
         return custom_format            
-    
+                
     @staticmethod
     def raise_warning(message: str = "warnning", category: type = Warning):
         instance = RaiseWarn(message, category)

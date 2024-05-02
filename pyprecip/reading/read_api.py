@@ -1,15 +1,18 @@
 import json
 from requests.exceptions import RequestException 
-from ..utits.http import send_request 
+from ..utits.http_ import send_request 
+from ..utits.sundries import check_param_type
 from ..utits.except_ import RaiseException as exc 
 from ..utits.warn_ import RaiseWarn as warn
 
-
 def get_address_info(address: str = "", city: str = None):
+    check_param_type(address, str, "address"); 
+    check_param_type(city, str, "city")
+
     if address != "":
         with open("./pyprecip/static/constant.json", "r", encoding="utf-8") as file:
             READ_API_DATA: dict = json.load(file)["READ_API"]    
-
+        
         GEOCODING_URL: str = READ_API_DATA["GEOCODING_URL"]
         PARAMS: dict = { 
             "key": READ_API_DATA["WEATHER_KEY"], 
@@ -33,17 +36,12 @@ def get_address_info(address: str = "", city: str = None):
     else:
         exc.raise_exception("address parameter cannot be null or invalid.", ValueError) 
 
-
 def get_weather_data(area_code: int = -1, address: str = "", 
                      city: str = "", forecasts: bool = False) -> dict:
-    if not isinstance(area_code, int):
-        exc.raise_exception("area_code parameter must be of type int.", TypeError)
-    if not isinstance(address, str):
-        exc.raise_exception("address parameter must be of type str.", TypeError)
-    if not isinstance(city, str):
-        exc.raise_exception("city parameter must be of type str.", TypeError) 
-    if not isinstance(forecasts, bool): 
-        exc.raise_exception("forecasts parameter must be of type bool.", TypeError)
+    check_param_type(area_code, int, "area_code"); 
+    check_param_type(address, str, "address")
+    check_param_type(city, str, "city")
+    check_param_type(forecasts, bool, "forecasts")
 
     request_result: dict = {}
     with open("./pyprecip/static/constant.json", "r", encoding="utf-8") as file:
@@ -102,8 +100,7 @@ def get_weather_data(area_code: int = -1, address: str = "",
         exc.raise_exception("An unknown error occurred in the climate data request. Please try again later", RequestException)
 
 
-
+# test 
 if __name__ == "__main__":
-    result = get_weather_data(address="青山区2") 
-    
-    print(result)
+    pass 
+

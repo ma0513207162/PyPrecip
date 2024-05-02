@@ -129,12 +129,4 @@ def read_csv(file_path: str, row_range: tuple = (), column_range: tuple = (),
 # 以主进程的方式运行 
 if __name__ == "__main__": 
     path = "./static/files/weather_data.csv"
-    # read_excel_result = read_csv(path, row_range=(1,10), column_range=(1,5), 
-    #                              row_indices=(1,2,3), column_indices=(2,3,4)) 
-
-    # for key in read_excel_result:
-    #     for value in read_excel_result[key]:
-    #         print(value) 
-
-    
-    
+    print("hello,world")

@@ -1,18 +1,17 @@
 from distutils.core import setup 
 from setuptools import find_packages
 
-
 with open("pypi_readme.rst", "r", encoding="utf-8") as f:
     long_description = f.read()
 
 # Package meta-data.
-NAME = "pyprecip"
+NAME = "PyPrecip"
 DESCRIPTION = "A climate data processing library."
 URL = "https://github.com/ma0513207162/pyprecip"
 EMAIL = "ma0513207162@163.com"
 AUTHOR = "hasang"
 REQUIRES_PYTHON = '>=3.7.0'
-VERSION = '0.0.3'
+VERSION = '0.0.6'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
