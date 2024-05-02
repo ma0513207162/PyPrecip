@@ -4,6 +4,5 @@
         "LOCATION_URL": "https://restapi.amap.com/v3/ip?parameters", 
         "GEOCODING_URL": "https://restapi.amap.com/v3/geocode/geo?parameters", 
         "WEATHER_KEY": "d81aece9933c31b8c15920517061581b"
-        
     }
 }

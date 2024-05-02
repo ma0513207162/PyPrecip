@@ -1,6 +1,7 @@
 import requests
 from requests.exceptions import Timeout, RequestException 
-from .exwarn import raise_exception, raise_warning 
+# from .except_ import exc.raise_exception 
+from .except_ import RaiseException as exc 
 
 
 def send_request(URL: str, PARAMS: dict):
@@ -15,7 +16,7 @@ def send_request(URL: str, PARAMS: dict):
             retry_count += 1 
             print(f"Request timed out, retrying... (Attempt {retry_count}/{MAX_RETRIES})")
         except RequestException as e:
-            raise_exception(f"An error occurred: {e}", RequestException)
+            exc.raise_exception(f"An error occurred: {e}", RequestException)
     else:
-        raise_exception("Maximum number of retries reached, giving up.", RequestException)
+        exc.raise_exception("Maximum number of retries reached, giving up.", RequestException)
 
