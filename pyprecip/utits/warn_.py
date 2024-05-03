@@ -8,7 +8,7 @@ class RaiseWarn():
         warnings.formatwarning = self.custom_formatwarning
 
     def custom_formatwarning(self, message_, category_, filename, lineno, line):
-        custom_format = f"PyPrecip {category_.__name__}: {message_} ({filename}:{lineno})\n"
+        custom_format = f"\033[93mPyPrecip {category_.__name__}: \033[0m{message_} ({filename}:{lineno})\n"
         return custom_format            
                 
     @staticmethod
