@@ -1,6 +1,5 @@
 import requests
 from requests.exceptions import Timeout, RequestException 
-# from .except_ import exc.raise_exception 
 from .except_ import RaiseException as exc 
 
 

@@ -1,10 +1,11 @@
 from openpyxl import load_workbook
+from ..utits.except_ import RaiseException as exc 
 import os, csv 
 
-def file_exists(func):
+def __file_exists(func):
     def wrapper(*args, **kwargs):     
         if not args and not kwargs:
-            raise TypeError("The file path is required.")  
+            exc.raise_exception("The file path is required.", TypeError) 
         return func(*args, **kwargs)
     return wrapper 
 
@@ -12,11 +13,11 @@ def file_exists(func):
 def read_betcdf():
     pass 
 
-@file_exists    
-def read_excel(file_path: str, sheet_names: tuple = (), 
+@__file_exists    
+def read_excel(path: str, sheet_names: tuple = (), 
                row_range: tuple = (), column_range: tuple = (), 
             row_indices: tuple = (), column_indices: tuple = ()) -> dict:
-    workbook = load_workbook(filename = file_path, data_only = True)
+    workbook = load_workbook(filename = path, data_only = True)
 
     # Gets the specified worksheet 
     sheet_list = []
@@ -75,8 +76,8 @@ def read_excel(file_path: str, sheet_names: tuple = (),
     return read_excel_result
 
 
-@file_exists    
-def read_csv(file_path: str, row_range: tuple = (), column_range: tuple = (), 
+@__file_exists    
+def read_csv(path: str, row_range: tuple = (), column_range: tuple = (), 
             row_indices: tuple = (), column_indices: tuple = ()): 
     read_csv_result: dict = {}
 
@@ -117,9 +118,9 @@ def read_csv(file_path: str, row_range: tuple = (), column_range: tuple = (),
                     raise IndexError("The index must be greater than 0 and less than the sequence length.");     
             temp_col_list.append(_list)
         reader_rows_list = temp_col_list
-
     
-    file_name = os.path.splitext(os.path.basename(file_path))[0]
+
+    file_name = os.path.splitext(os.path.basename(path))[0]
     read_csv_result[file_name] = reader_rows_list
 
     return read_csv_result
@@ -128,5 +129,6 @@ def read_csv(file_path: str, row_range: tuple = (), column_range: tuple = (),
 
 # 以主进程的方式运行 
 if __name__ == "__main__": 
-    path = "./static/files/weather_data.csv"
-    print("hello,world")
+    path = "./static/weather_data.csv"
+    read_result = read_csv(path=path, row_range=(1,5));
+    print(read_result)

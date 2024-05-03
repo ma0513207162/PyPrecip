@@ -5,9 +5,9 @@ from ..utits.sundries import check_param_type
 from ..utits.except_ import RaiseException as exc 
 from ..utits.warn_ import RaiseWarn as warn
 
-WEATHER_KEY = "123"
+WEATHER_KEY = ""
 
-
+# private decorator 
 def __check_weather_key(func):
     def wrapper(*args, **kwargs):
         """
@@ -44,7 +44,7 @@ def get_address_info(address: str = "", city: str = None) -> dict:
 
     check_param_type(address, str, "address"); 
     check_param_type(city, str, "city")
-
+                
     if address != "":
         with open("./pyprecip/_constant.json", "r", encoding="utf-8") as file:
             READ_API_DATA: dict = json.load(file)["READ_API"]    
@@ -154,8 +154,8 @@ def get_weather_data(area_code: int = -1, address: str = "",
 
 # test 
 if __name__ == "__main__":
-    result = get_weather_data(address="和平区")
+    WEATHER_KEY = "d81aece9933c31b8c15920517061581b"
+    result = get_weather_data(address="和平",forecasts=True)
     print(result)
-
 
 

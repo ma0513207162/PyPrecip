@@ -15,6 +15,6 @@ pip install pyprecip
 # 使用
 
 ```shell
-python -B -m pyprecip.xxx.xxx
+python -m pyprecip.xxx.xxx
 ```
 
