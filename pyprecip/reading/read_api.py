@@ -5,10 +5,10 @@ from ..utits.sundries import check_param_type
 from ..utits.except_ import RaiseException as exc 
 from ..utits.warn_ import RaiseWarn as warn
 
-WEATHER_KEY = ""
+WEATHER_KEY = "123"
 
 
-def check_weather_key(func):
+def __check_weather_key(func):
     def wrapper(*args, **kwargs):
         """
         Check whether the global variable WEATHER_KEY is empty, and if it is, 
@@ -24,7 +24,7 @@ def check_weather_key(func):
     return wrapper
 
 
-@check_weather_key
+@__check_weather_key
 def get_address_info(address: str = "", city: str = None) -> dict:
     """
     The Amap geocoding service API is encapsulated to obtain the region code based on the provided address information.
@@ -71,7 +71,7 @@ def get_address_info(address: str = "", city: str = None) -> dict:
         exc.raise_exception("address parameter cannot be null or invalid.", ValueError) 
 
 
-@check_weather_key
+@__check_weather_key
 def get_weather_data(area_code: int = -1, address: str = "", 
                      city: str = "", forecasts: bool = False) -> dict:
     """
