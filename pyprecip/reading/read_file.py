@@ -1,6 +1,6 @@
+import os, csv
 from openpyxl import load_workbook
 from ..utits.except_ import RaiseException as exc 
-import os, csv 
 
 def __file_exists(func):
     def wrapper(*args, **kwargs):     
@@ -45,7 +45,7 @@ def read_excel(path: str, sheet_names: tuple = (),
                 if idx > 0 and idx <= len(sheet_iter_rows):
                     temp_iter_rows.append(sheet_iter_rows[idx-1]) 
                 else:
-                    raise IndexError("The index must be greater than 0 and less than the sequence length.");
+                    exc.raise_exception("The index must be greater than 0 and less than the sequence length.", IndexError)
             sheet_iter_rows = temp_iter_rows
                                         
         # 封装二维序列返回
@@ -68,7 +68,7 @@ def read_excel(path: str, sheet_names: tuple = (),
                     if idx > 0 and idx <= len(row):
                         _list.append(row[idx-1])
                     else:
-                        raise IndexError("The index must be greater than 0 and less than the sequence length.");     
+                        exc.raise_exception("The index must be greater than 0 and less than the sequence length.",IndexError )
                 temp_col_list.append(_list)
             read_excel_result[sheet.title] = temp_col_list
 
@@ -103,7 +103,7 @@ def read_csv(path: str, row_range: tuple = (), column_range: tuple = (),
             if idx >= 1 and idx <= len(reader_rows_list):
                 row_idx_list.append(reader_rows_list[idx-1]) 
             else:
-                raise IndexError("The index must be greater than 0 and less than the sequence length.");
+                exc.raise_exception("The index must be greater than 0 and less than the sequence length.", IndexError)
         reader_rows_list = row_idx_list 
     
     # 保留指定的列序列 column_indices
@@ -115,10 +115,9 @@ def read_csv(path: str, row_range: tuple = (), column_range: tuple = (),
                 if idx > 0 and idx <= len(row):
                     _list.append(row[idx-1])
                 else:
-                    raise IndexError("The index must be greater than 0 and less than the sequence length.");     
+                    exc.raise_exception("The index must be greater than 0 and less than the sequence length.", IndexError)
             temp_col_list.append(_list)
         reader_rows_list = temp_col_list
-    
 
     file_name = os.path.splitext(os.path.basename(path))[0]
     read_csv_result[file_name] = reader_rows_list
@@ -129,6 +128,6 @@ def read_csv(path: str, row_range: tuple = (), column_range: tuple = (),
 
 # 以主进程的方式运行 
 if __name__ == "__main__": 
-    path = "./static/weather_data.csv"
-    read_result = read_csv(path=path, row_range=(1,5));
+    path = "./static/weather_data.xlsx"
+    read_result = read_excel(path=path, row_range=(1,5));
     print(read_result)
