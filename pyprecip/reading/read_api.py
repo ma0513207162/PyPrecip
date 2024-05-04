@@ -34,7 +34,6 @@ def get_address_info(address: str = "", city: str = None) -> dict:
     - address (str): The address information to obtain the corresponding region code
     - city (str): The city name, used to assist in obtaining the region code based on the address
 
-    
     Returns
     -------------------------------
     - dict: A dictionary containing the region code information based on the provided address
@@ -43,8 +42,8 @@ def get_address_info(address: str = "", city: str = None) -> dict:
     """
 
     check_param_type(address, str, "address"); 
-    check_param_type(city, str, "city")
-                
+    check_param_type(city, str, "city"); 
+
     if address != "":
         with open("./pyprecip/_constant.json", "r", encoding="utf-8") as file:
             READ_API_DATA: dict = json.load(file)["READ_API"]    
@@ -73,7 +72,7 @@ def get_address_info(address: str = "", city: str = None) -> dict:
 
 @__check_weather_key
 def get_weather_data(area_code: int = -1, address: str = "", 
-                     city: str = "", forecasts: bool = False) -> dict:
+                    city: str = "", forecasts: bool = False) -> dict:
     """
     The Amap Open Platform weather data API is encapsulated to obtain real-time weather or future weather forecast data for a specified area.
     
@@ -93,7 +92,7 @@ def get_weather_data(area_code: int = -1, address: str = "",
     check_param_type(address, str, "address")
     check_param_type(city, str, "city")
     check_param_type(forecasts, bool, "forecasts")
-
+    
     request_result: dict = {}
     with open("./pyprecip/_constant.json", "r", encoding="utf-8") as file:
         READ_API_DATA: dict = json.load(file)["READ_API"]    
@@ -140,7 +139,7 @@ def get_weather_data(area_code: int = -1, address: str = "",
             for key_ in ["province", "city", "reporttime", "adcode"]:
                 del forecasts_or_lives_copy[key_]
             forecasts_or_lives["casts"] = [forecasts_or_lives_copy]
-
+        
         request_result["province"] = forecasts_or_lives["province"]
         request_result["city"] = forecasts_or_lives["city"]
         request_result["update_time"] = forecasts_or_lives["reporttime"] 
@@ -154,8 +153,8 @@ def get_weather_data(area_code: int = -1, address: str = "",
 
 # test 
 if __name__ == "__main__":
-    WEATHER_KEY = "d81aece9933c31b8c15920517061581b"
-    result = get_weather_data(address="和平",forecasts=True)
+    # 自行注册高德 Key
+    result = get_weather_data(address="深圳")
     print(result)
 
 
