@@ -75,7 +75,7 @@ def read_excel(path: str, sheet_names: tuple = (),
 
     return read_excel_result
 
-
+# 需要按行、按列  
 @__file_exists    
 def read_csv(path: str, row_range: tuple = (), column_range: tuple = (), 
             row_indices: tuple = (), column_indices: tuple = ()): 

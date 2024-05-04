@@ -67,6 +67,27 @@ def replace_invalid_data(raw_data: dict = {}, replace_value: (str|int) = 0)  -> 
         return valid_data; 
 
 
+@__check_param
+def remove_duplicate_data(raw_data: dict = {}) -> dict:
+    """
+    """     
+
+    check_param_type(raw_data, dict, "raw_data");
+    unique_data: dict = {}; 
+        
+    for item in raw_data:
+        unique_data[item] = [raw_data[item][0]] 
+        raw_data[item] = raw_data[item][1:]; 
+        # 去重算法 - 待优化
+        for sub_list in raw_data[item]:
+            if sub_list not in unique_data[item]:
+                unique_data[item].append(sub_list)
+
+    return unique_data; 
+    
+
+
+
 
 
 # test 
@@ -76,8 +97,13 @@ if __name__ == "__main__":
         MULTI_DICT: dict = json.load(file)["HANDLE_MISSING"]["TEST_MULTI_DICT"]  
 
     print(MULTI_DICT["weather_data"])
-    MULTI_DICT = filter_invalid_data(MULTI_DICT); 
-    MULTI_DICT = replace_invalid_data(MULTI_DICT, replace_value="hello,world"); 
+    print(len(MULTI_DICT["weather_data"])) 
+    MULTI_DICT = remove_duplicate_data(MULTI_DICT)
+
+    print(MULTI_DICT["weather_data"])
+    print(len(MULTI_DICT["weather_data"])) 
+
+
 
 
 
