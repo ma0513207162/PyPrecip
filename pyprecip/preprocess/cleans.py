@@ -88,9 +88,7 @@ def remove_duplicate_data(raw_data: dict = {}) -> dict:
 
 @__check_param
 def unified_format():
-    pass 
-
-
+    pass
 
 
 if __name__ == "__main__":

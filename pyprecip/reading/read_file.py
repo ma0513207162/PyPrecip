@@ -11,10 +11,9 @@ def __file_exists(func):
         return func(*args, **kwargs)
     return wrapper 
 
-
 @__file_exists    
-def read_excel(path: str, sheet_names: tuple = (), 
-               row_range: tuple = (), column_range: tuple = (), 
+def read_excel(path: str, row_read: bool = True, sheet_names: tuple = (), 
+            row_range: tuple = (), column_range: tuple = (), 
             row_indices: tuple = (), column_indices: tuple = ()) -> dict:
     workbook = load_workbook(filename = path, data_only = True)
 
@@ -49,18 +48,17 @@ def read_excel(path: str, sheet_names: tuple = (),
                                         
         # 封装二维序列返回
         if column_indices == ():
-            temp_row_list = [] 
+            temp_list = [] 
             for row in sheet_iter_rows:
-                temp_row_list.append(list(row))
-            read_excel_result[sheet.title] = temp_row_list;
+                temp_list.append(list(row))
         else:
             """
             # 使用 map 和 lambda 函数列表生成式 
             lambda_func = lambda row: [row[idx-1] for idx in column_indices]
-            temp_col_list = list(map(lambda_func, sheet_iter_rows))
+            temp_list = list(map(lambda_func, sheet_iter_rows))
             """
             # 保留指定的列序列 column_indices
-            temp_col_list = [] 
+            temp_list = [] 
             for row in sheet_iter_rows:
                 _list = []
                 for idx in column_indices:
@@ -68,68 +66,74 @@ def read_excel(path: str, sheet_names: tuple = (),
                         _list.append(row[idx-1])
                     else:
                         exc.raise_exception("The index must be greater than 0 and less than the sequence length.",IndexError )
-                temp_col_list.append(_list)
-            read_excel_result[sheet.title] = temp_col_list
+                temp_list.append(_list)
+
+
+
+        read_excel_result[sheet.title] = temp_list; 
 
 
     return read_excel_result
 
 
+
 @__file_exists    
-def read_csv(path: str, column_read: bool = True, row_range: tuple = (), column_range: tuple = (), 
-            row_indices: tuple = (), column_indices: tuple = ()): 
+def read_csv(path: str, row_indices: (tuple|list) = (), column_indices: (tuple|list) = ()): 
+    check_param_type(path, str, "path")
+    check_param_type(row_indices, (tuple|list), "row_indices")
+    check_param_type(column_indices, (tuple|list), "column_indices")
+
+    """ 以列的方式进行读取 """
     read_csv_result: dict = {}
 
     with open(path, "r", encoding="gbk") as csv_file:
-        reader_rows_list = list(csv.reader(csv_file)) 
+        reader_csv = list(csv.reader(csv_file)) 
 
-    # 指定行和列范围 row_range column_range 
-    if row_range != ():
-        start, end = row_range
-        reader_rows_list = reader_rows_list[start-1: end]
-       
-    if column_range != ():
-        temp_row_list = []
-        for row in reader_rows_list:
-            row_ = row[column_range[0]-1: column_range[1]]
-            temp_row_list.append(row_) 
-        reader_rows_list = temp_row_list
-
-    # 保留指定的行序列 row_indices
-    if row_indices != ():
+    # 指定行范围  
+    if isinstance(row_indices, list) and row_indices != []:
+        row_indices.extend([1] * (3 - len(row_indices))) 
+        start, end, _ = row_indices[0], row_indices[1], row_indices[2]
+        reader_csv = reader_csv[start-1: end]
+    # 指定行索引 
+    if isinstance(row_indices, tuple) and row_indices != ():
         row_idx_list = []
         for idx in row_indices:
-            if idx >= 1 and idx <= len(reader_rows_list):
-                row_idx_list.append(reader_rows_list[idx-1]) 
+            if idx >= 1 and idx <= len(reader_csv):
+                row_idx_list.append(reader_csv[idx-1]) 
             else:
                 exc.raise_exception("The index must be greater than 0 and less than the sequence length.", IndexError)
-        reader_rows_list = row_idx_list 
-    
-    # 保留指定的列序列 column_indices
-    if column_indices != ():
-        temp_col_list = [] 
-        for row in reader_rows_list:
-            _list = []
-            for idx in column_indices:
-                if idx > 0 and idx <= len(row):
-                    _list.append(row[idx-1])
-                else:
-                    exc.raise_exception("The index must be greater than 0 and less than the sequence length.", IndexError)
-            temp_col_list.append(_list)
-        reader_rows_list = temp_col_list
+        reader_csv = row_idx_list; 
 
-    # 按列读取 
-    if column_read:
-        reader_rows_list = [list(pair) for pair in zip(*reader_rows_list)] 
+    # ——————————————————
+    reader_csv = list(zip(*reader_csv)) 
+    # list 类型指定行范围  
+    if isinstance(column_indices, list) and column_indices != []:
+        column_indices.extend([1] * (3 - len(column_indices))) 
+        start, end, _ = column_indices[0], column_indices[1], column_indices[2]; 
+        reader_csv = reader_csv[start-1: end]
+    # tuple 类型指定列索引 
+    if isinstance(column_indices, tuple) and column_indices != ():
+        col_idx_list = [] 
+        for idx in column_indices:
+            if idx >= 1 and idx <= len(reader_csv):
+                col_idx_list.append(reader_csv[idx-1]); 
+            else:
+                exc.raise_exception("The index must be greater than 0 and less than the sequence length.", IndexError)
+        reader_csv = col_idx_list;
 
+    # 封装 dict 对象
     file_name = os.path.splitext(os.path.basename(path))[0]
-    read_csv_result[file_name] = reader_rows_list
-    return read_csv_result  
+    read_csv_result[file_name] = reader_csv; 
+
+    return read_csv_result;  
 
 
 
 # 以主进程的方式运行 
 if __name__ == "__main__": 
-    path = "./static/weather_data.csv"
-    read_result = read_csv(path=path, column_read=True, row_range=(1,5));
-    print(read_result)
+    path = "./static/test_data.csv"
+    reader_csv = read_csv(path=path, row_indices=[1,2], column_indices=[2,4]);
+
+    for item in reader_csv["test_data"]:
+        print(item)
+    
