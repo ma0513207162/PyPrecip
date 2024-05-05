@@ -153,6 +153,7 @@ def get_weather_data(area_code: int = -1, address: str = "",
 
 # test 
 if __name__ == "__main__":
+    WEATHER_KEY = "924b8e363afee02540a32772cd51f51e"
     # 自行注册高德 Key
     result = get_weather_data(address="深圳")
     print(result)

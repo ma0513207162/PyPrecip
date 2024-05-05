@@ -1,6 +1,8 @@
 import os, csv
 from openpyxl import load_workbook
 from ..utits.except_ import RaiseException as exc 
+from ..utits.sundries import check_param_type
+
 
 def __file_exists(func):
     def wrapper(*args, **kwargs):     
@@ -9,9 +11,6 @@ def __file_exists(func):
         return func(*args, **kwargs)
     return wrapper 
 
-
-def read_betcdf():
-    pass 
 
 @__file_exists    
 def read_excel(path: str, sheet_names: tuple = (), 
@@ -76,9 +75,8 @@ def read_excel(path: str, sheet_names: tuple = (),
     return read_excel_result
 
 
-# 需要按行、按列  
 @__file_exists    
-def read_csv(path: str, row_range: tuple = (), column_range: tuple = (), 
+def read_csv(path: str, column_read: bool = True, row_range: tuple = (), column_range: tuple = (), 
             row_indices: tuple = (), column_indices: tuple = ()): 
     read_csv_result: dict = {}
 
@@ -120,15 +118,18 @@ def read_csv(path: str, row_range: tuple = (), column_range: tuple = (),
             temp_col_list.append(_list)
         reader_rows_list = temp_col_list
 
+    # 按列读取 
+    if column_read:
+        reader_rows_list = [list(pair) for pair in zip(*reader_rows_list)] 
+
     file_name = os.path.splitext(os.path.basename(path))[0]
     read_csv_result[file_name] = reader_rows_list
-
-    return read_csv_result
+    return read_csv_result  
 
 
 
 # 以主进程的方式运行 
 if __name__ == "__main__": 
-    path = "./static/weather_data.xlsx"
-    read_result = read_excel(path=path, row_range=(1,5));
+    path = "./static/weather_data.csv"
+    read_result = read_csv(path=path, column_read=True, row_range=(1,5));
     print(read_result)
