@@ -9,34 +9,6 @@ def __check_param(func):
         return func(*args, **kwargs)
     return wrapper
 
-
-@__check_param
-def filter_invalid_data(raw_data: dict = {}) -> dict:
-    """
-    Filter invalid data and return a valid data dictionary.
-
-    Parameters:
-     - raw_data (dict): Raw data dictionary, where each key corresponds to a list, the first element of the list is the initial valid data list, and subsequent elements may be invalid data.
-
-    Returns:
-     - dict: Dictionary containing valid data, where each key corresponds to a list of the elements in the list that are valid data.
-    """
-
-    check_param_type(raw_data, dict, "raw_data"); 
-    valid_data: dict = {} 
-
-    for item in raw_data:
-        valid_data[item] = [raw_data[item][0]]               
-        ITEM_ELE_ = len(raw_data[item][0])  
-
-        for seq_ele in raw_data[item][1:]:
-            if isinstance(seq_ele, list) and (len(seq_ele) == ITEM_ELE_):
-                if seq_ele not in valid_data[item]:
-                    valid_data[item].append(seq_ele)
-
-    return valid_data; 
-
-
 @__check_param
 def replace_invalid_data(raw_data: dict = {}, replace_value: (str|int) = 0)  -> dict:
     """
@@ -85,27 +57,42 @@ def remove_duplicate_data(raw_data: dict = {}) -> dict:
         
     return unique_data; 
 
-
 @__check_param
 def unified_format():
     pass
 
 
+@__check_param
+def filter_invalid_data(raw_data: dict = {}) -> dict:
+    """
+    Filter invalid data and return a valid data dictionary.
+
+    Parameters:
+     - raw_data (dict): Raw data dictionary, where each key corresponds to a list, the first element of the list is the initial valid data list, and subsequent elements may be invalid data.
+
+    Returns:
+     - dict: Dictionary containing valid data, where each key corresponds to a list of the elements in the list that are valid data.
+    """
+
+    check_param_type(raw_data, dict, "raw_data"); 
+    valid_data: dict = {} 
+    
+    for item in raw_data:
+        valid_data[item] = [raw_data[item][0]]               
+        ITEM_ELE_ = len(raw_data[item][0])  
+
+        for seq_ele in raw_data[item][1:]:
+            if isinstance(seq_ele, list) and (len(seq_ele) == ITEM_ELE_):
+                if seq_ele not in valid_data[item]:
+                    valid_data[item].append(seq_ele)
+
+    return valid_data;  
+
+
+
 if __name__ == "__main__":
     MULTI_DICT: dict = {}; 
     with open("./pyprecip/_constant.json", "r", encoding="utf-8") as file:
-        MULTI_DICT: dict = json.load(file)["HANDLE_MISSING"]["TEST_MULTI_DICT"]  
+        MULTI_DICT: dict = json.load(file)["HANDLE_MISSING"]["test_data"]  
 
-    # print(MULTI_DICT["weather_data"])
-    # print(len(MULTI_DICT["weather_data"])) 
-    # MULTI_DICT = remove_duplicate_data(MULTI_DICT)
-
-    # print(MULTI_DICT["weather_data"])
-    # print(len(MULTI_DICT["weather_data"])) 
-
-
-
-
-
-
-
+    print(MULTI_DICT)
