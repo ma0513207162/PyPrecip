@@ -19,9 +19,7 @@ def check_param_type(value, expected_type, param_name):
             expected_type_str = ' or '.join(type_names)
         else:
             expected_type_str = expected_type.__name__
-        
         exc.raise_exception(f"{param_name} parameter must be of type {expected_type_str}.", TypeError)
-
 
 if __name__ == "__main__": 
     # test 

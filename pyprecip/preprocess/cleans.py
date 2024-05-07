@@ -1,4 +1,5 @@
-import json 
+import json
+from typing import List 
 from ..utits.sundries import check_param_type
 from ..utits.except_ import RaiseException as exc
 
@@ -8,6 +9,25 @@ def __check_param(func):
             exc.raise_exception("The raw_data parameter is required.",ValueError )
         return func(*args, **kwargs)
     return wrapper
+
+
+@__check_param
+def remove_duplicate_data(raw_data: dict = {}) -> dict:
+    """
+    """     
+
+    check_param_type(raw_data, dict, "raw_data");
+    unique_data: dict = {}; 
+
+    for item in raw_data:       
+        unique_data[item] = [raw_data[item][0]] 
+        raw_data[item] = raw_data[item][1:]; 
+        # 去重算法 - 待优化
+        for sub_list in raw_data[item]:
+            if sub_list not in unique_data[item]:
+                unique_data[item].append(sub_list)
+        
+    return unique_data; 
 
 @__check_param
 def replace_invalid_data(raw_data: dict = {}, replace_value: (str|int) = 0)  -> dict:
@@ -40,29 +60,6 @@ def replace_invalid_data(raw_data: dict = {}, replace_value: (str|int) = 0)  -> 
 
 
 @__check_param
-def remove_duplicate_data(raw_data: dict = {}) -> dict:
-    """
-    """     
-
-    check_param_type(raw_data, dict, "raw_data");
-    unique_data: dict = {}; 
-
-    for item in raw_data:       
-        unique_data[item] = [raw_data[item][0]] 
-        raw_data[item] = raw_data[item][1:]; 
-        # 去重算法 - 待优化
-        for sub_list in raw_data[item]:
-            if sub_list not in unique_data[item]:
-                unique_data[item].append(sub_list)
-        
-    return unique_data; 
-
-@__check_param
-def unified_format():
-    pass
-
-
-@__check_param
 def filter_invalid_data(raw_data: dict = {}) -> dict:
     """
     Filter invalid data and return a valid data dictionary.
@@ -76,7 +73,7 @@ def filter_invalid_data(raw_data: dict = {}) -> dict:
 
     check_param_type(raw_data, dict, "raw_data"); 
     valid_data: dict = {} 
-    
+
     for item in raw_data:
         valid_data[item] = [raw_data[item][0]]               
         ITEM_ELE_ = len(raw_data[item][0])  
@@ -86,13 +83,43 @@ def filter_invalid_data(raw_data: dict = {}) -> dict:
                 if seq_ele not in valid_data[item]:
                     valid_data[item].append(seq_ele)
 
-    return valid_data;  
+    return valid_data; 
+ 
+@__check_param
+def process_invalid_data(raw_data: List[(str|int)], remove_invalid: bool = False, 
+    invalid_value: tuple = (None, ""), remove_rows: bool = False, replace_value: (str|int) = 0):
+    """
+    """
+
+    check_param_type(raw_data, list, "raw_data");  
+    check_param_type(remove_invalid, bool, "remove_invalid");  
+    check_param_type(invalid_value, tuple, "invalid_value");  
+    check_param_type(remove_rows, bool, "remove_rows");  
+    check_param_type(replace_value, (str|int), "replace_value");  
+    valid_data: List[(str|int)] = [];
 
 
+    # 处理无效值  
+    if remove_invalid:
+        if remove_rows:
+            # 删除整行      
+            for data in raw_data:
+                if not any(inv in data for inv in invalid_value):
+                    valid_data.append(data)
+        else:
+            for data in raw_data:
+                data = list(filter(lambda x: x not in invalid_value, data)); 
+                valid_data.append(data);
+    else:       
+        pass
 
+    
+    return valid_data
+
+# 以主进程的方式运行 
 if __name__ == "__main__":
-    MULTI_DICT: dict = {}; 
-    with open("./pyprecip/_constant.json", "r", encoding="utf-8") as file:
-        MULTI_DICT: dict = json.load(file)["HANDLE_MISSING"]["test_data"]  
+    with open("./static/test_data.json", "r", encoding="utf-8") as file:
+        test_data: dict = json.load(file)["row_data"]  
 
-    print(MULTI_DICT)
+    print(test_data)
+    # process_invalid_data(test_data, remove_invalid=True)

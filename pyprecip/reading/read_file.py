@@ -13,7 +13,7 @@ def __file_exists(func):
 
 @__file_exists    
 def read_excel(path: str, by_row: bool = False,  sheet_names: tuple = (), row_indices: (tuple|list) = (),
-            column_indices: (tuple|list) = ()) -> dict: 
+            col_indices: (tuple|list) = ()) -> dict: 
     """
     Reads data from a specified worksheet, row, and column from an Excel file.
 
@@ -21,7 +21,7 @@ def read_excel(path: str, by_row: bool = False,  sheet_names: tuple = (), row_in
      - path: indicates the Excel file path
      - sheet_names: A tuple of sheet names to be read. If empty, the active sheet is read
      - row_indices: Specifies the read row range (list length 2) or row index (tuple)
-     - column_indices: specifies the read column range (list length 2) or column index (tuple)
+     - col_indices: specifies the read column range (list length 2) or column index (tuple)
      - by_row: If True, read the file by rows (default). If False, read the file by columns.
     Return:
      - Dictionary. The key is the name of the worksheet and the value is the read data
@@ -31,7 +31,7 @@ def read_excel(path: str, by_row: bool = False,  sheet_names: tuple = (), row_in
     check_param_type(path, str, "path");
     check_param_type(sheet_names, tuple, "sheet_names");
     check_param_type(row_indices, (tuple|list), "row_indices"); 
-    check_param_type(column_indices, (tuple|list), "column_indices");
+    check_param_type(col_indices, (tuple|list), "col_indices");
 
     workbook = load_workbook(filename = path, data_only = True) 
 
@@ -68,17 +68,17 @@ def read_excel(path: str, by_row: bool = False,  sheet_names: tuple = (), row_in
 
         # list 类型指定行范围
         sheet_iter_cols = list(zip(*sheet_iter_rows)) 
-        if isinstance(column_indices, list) and column_indices != []:
-            if len(column_indices) == 2:
-                start, end = column_indices[0], column_indices[1]; 
+        if isinstance(col_indices, list) and col_indices != []:
+            if len(col_indices) == 2:
+                start, end = col_indices[0], col_indices[1]; 
                 sheet_iter_cols = sheet_iter_cols[start-1: end]  
             else:
-                warn.raise_warning("The column_indices parameter must contain only two elements, otherwise it is invalid.")   
+                warn.raise_warning("The col_indices parameter must contain only two elements, otherwise it is invalid.")   
 
         # tuple 类型指定列索引 
-        if isinstance(column_indices, tuple) and column_indices != ():
+        if isinstance(col_indices, tuple) and col_indices != ():
             col_idx_list = [] 
-            for idx in column_indices:
+            for idx in col_indices:
                 if idx >= 1 and idx <= len(sheet_iter_cols):
                     col_idx_list.append(sheet_iter_cols[idx-1]); 
                 else:
@@ -96,14 +96,14 @@ def read_excel(path: str, by_row: bool = False,  sheet_names: tuple = (), row_in
 
 @__file_exists    
 def read_csv(path: str, by_row: bool = False, 
-            row_indices: (tuple|list) = (), column_indices: (tuple|list) = ()): 
+            row_indices: (tuple|list) = (), col_indices: (tuple|list) = ()): 
     """     
     Reads data for specified rows and columns from a CSV file.
 
     Parameters:
      - path: indicates the path of the CSV file
      - row_indices: Specifies the read row range (list length 2) or row index (tuple)
-     - column_indices: specifies the read column range (list length 2) or column index (tuple)
+     - col_indices: specifies the read column range (list length 2) or column index (tuple)
      - by_row: If True, read the file by rows (default). If False, read the file by columns.
     Returns:
      - Dictionary. The key indicates the file name and the value indicates the read data
@@ -112,7 +112,7 @@ def read_csv(path: str, by_row: bool = False,
     # 检查参数类型 
     check_param_type(path, str, "path");
     check_param_type(row_indices, (tuple|list), "row_indices"); 
-    check_param_type(column_indices, (tuple|list), "column_indices");
+    check_param_type(col_indices, (tuple|list), "col_indices");
 
     read_csv_result: dict = {}; 
     with open(path, "r", encoding="gbk") as csv_file:
@@ -138,17 +138,17 @@ def read_csv(path: str, by_row: bool = False,
 
     # list 类型指定行范围
     reader_csv = list(zip(*reader_csv)) 
-    if isinstance(column_indices, list) and column_indices != []:
-        if len(column_indices) == 2:
-            start, end = column_indices[0], column_indices[1]; 
+    if isinstance(col_indices, list) and col_indices != []:
+        if len(col_indices) == 2:
+            start, end = col_indices[0], col_indices[1]; 
             reader_csv = reader_csv[start-1: end]
         else:
-            warn.raise_warning("The column_indices parameter must contain only two elements, otherwise it is invalid.") 
+            warn.raise_warning("The col_indices parameter must contain only two elements, otherwise it is invalid.") 
     
     # tuple 类型指定列索引 
-    if isinstance(column_indices, tuple) and column_indices != ():
+    if isinstance(col_indices, tuple) and col_indices != ():
         col_idx_list = [] 
-        for idx in column_indices:
+        for idx in col_indices:
             if idx >= 1 and idx <= len(reader_csv):
                 col_idx_list.append(reader_csv[idx-1]); 
             else:
@@ -169,7 +169,9 @@ def read_csv(path: str, by_row: bool = False,
 # 以主进程的方式运行 
 if __name__ == "__main__": 
     path = "./static/test_data.xlsx"
-    read_result = read_excel(path=path);
+    read_result = read_excel(path=path, row_indices=(1,3), col_indices=[1,5]);
 
+    for key in read_result:
+        for value in read_result[key]:
+            print(value)
     
-        
