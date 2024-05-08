@@ -4,6 +4,7 @@ def system():
     pass 
 
 
+# 简单随机选择 
 def simple_random(data: list, sample_size: int):
     """
     Sample the sample_size row randomly from the two-dimensional list data
