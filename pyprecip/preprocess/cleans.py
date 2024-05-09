@@ -11,6 +11,31 @@ def __check_param(func):
         return func(*args, **kwargs)
     return wrapper
 
+"""
+@__check_param
+def normalize_data(raw_data: List[(str|int)]):
+    check_param_type(raw_data, list, "raw_data"); 
+    normalize_result: List[list] = [];
+
+    for data in raw_data:
+        temp_list = []; 
+        for item in data:
+            if isinstance(item, (str, int, float, complex)):
+                temp_list.append(str(item));
+            elif isinstance(item, (tuple, list, set)):
+                temp_list.extend(item)
+            elif isinstance(item, bool):
+                temp_list.append(1 if bool == True else False);             
+            elif isinstance(item, dict):
+                temp_list.extend(dict.values());  
+                temp_list.extend(dict.keys());
+            else:
+                temp_list.append(item);
+        normalize_result.append(temp_list); 
+    return normalize_result; 
+"""
+
+
 @__check_param
 def process_invalid_data(raw_data: List[(str|int)], remove_invalid: bool = False, 
     remove_rows: bool = False, replace_value: (str|int) = 0, invalid_value: tuple = (None, "")) -> list:
@@ -60,6 +85,7 @@ def process_invalid_data(raw_data: List[(str|int)], remove_invalid: bool = False
 
     return valid_data
 
+
 @__check_param
 def remove_duplicate_data(raw_data: List[(str|int)], approx_dele: bool = False) -> list:
     """
@@ -95,13 +121,6 @@ def remove_duplicate_data(raw_data: List[(str|int)], approx_dele: bool = False) 
     return unique_data;
 
 
-@__check_param
-def normalize_data(raw_data: List[(str|int)]):
-    """
-    """
-    check_param_type(raw_data, list, "raw_data"); 
-    
-
 
 
 
@@ -109,10 +128,11 @@ def normalize_data(raw_data: List[(str|int)]):
 if __name__ == "__main__":
     with open("./static/test_data.json", "r", encoding="utf-8") as file:
         duplicate_data: dict = json.load(file)["row_data"]
+   
 
-    print(duplicate_data)
-    sole_data = remove_duplicate_data(duplicate_data); 
-    print(sole_data) 
+
+ 
+
 
 
     
