@@ -1,51 +1,54 @@
-import json, random 
+import json, random;  
+from ..utits.sundries import check_param_type
+from ..utits.except_ import RaiseException as exc
 
-def system():
+
+# 分层系统抽样 
+def stratify_system_sample():
     pass 
 
+# 系统抽样 
+def system_sample():
+    pass 
 
+# 分层采样 
+def stratify_sample():
+    pass 
+  
 # 简单随机选择 
-def simple_random(data: list, sample_size: int):
+def simple_random_sample(raw_data: list, sample_num: int, seed: int = None):
     """
-    Sample the sample_size row randomly from the two-dimensional list data
-
-    Parameters
-    -------------------------------
-     - data (list): raw 2D data
-     - sample_size (int): Sample size to be extracted
-
-    Returns
-    -------------------------------
-     - list: indicates the sample data
     """
-    # 检查输入是否合法
-    if not isinstance(data, list) or not data:
-        raise ValueError("输入数据必须是非空列表")
-    if not isinstance(sample_size, int) or sample_size <= 0:
-        raise ValueError("样本量必须是正整数")
-    if sample_size > len(data):
-        raise ValueError("样本量不能超过原始数据行数")
+    check_param_type(raw_data, list, "raw_data");
+    check_param_type(sample_num, int, "sample_num");
+    check_param_type(seed, (int|None), "seed");
+
+    if sample_num <= 0:
+        exc.raise_exception("The sample size must be greater than 0", ValueError)
+    if sample_num > len(raw_data):
+        exc.raise_exception("The sample size cannot be larger than the original data length", ValueError)
+
+    # 随机种子  
+    if seed is not None: 
+        random.seed(seed); 
     
-    # 构建索引列表
-    indices = list(range(len(data)))
-    
-    # 随机打乱索引
-    random.shuffle(indices)
+    indices = list(range(len(raw_data)));
+    random.shuffle(indices);   
     
     # 根据样本量获取对应索引的数据行
-    sample_indices = indices[:sample_size]
-    sample = [data[i] for i in sample_indices]
+    sample_indices = indices[:sample_num]
+    sample_result = [raw_data[i] for i in sample_indices]
     
-    return sample  
+    return sample_result; 
 
 
-
+# 以主进程的方式运行 
 if __name__ == "__main__":
-    MULTI_DICT: dict = {}; 
-    with open("./pyprecip/_constant.json", "r", encoding="utf-8") as file:
-        MULTI_DICT: dict = json.load(file)["HANDLE_MISSING"]["TEST_MULTI_DICT"]  
-
-    print(MULTI_DICT["weather_data"])
-    # print(len(MULTI_DICT["weather_data"])) 
+    raw_data: dict = {}; 
+    with open("./static/test_data.json", "r", encoding="utf-8") as file:
+        raw_data: dict = json.load(file)["row_data"];  
+        
+    sample_result = simple_random_sample(raw_data, -1); 
+    print(sample_result) 
 
 

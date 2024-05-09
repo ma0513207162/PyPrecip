@@ -123,13 +123,14 @@ def remove_duplicate_data(raw_data: List[(str|int)], approx_dele: bool = False) 
 
 
 
-
 # 以主进程的方式运行 
 if __name__ == "__main__":
     with open("./static/test_data.json", "r", encoding="utf-8") as file:
-        duplicate_data: dict = json.load(file)["row_data"]
-   
+        duplicate_data: dict = json.load(file)["row_data"]; 
+    
+    import sys; 
 
+    print(sys.path) 
 
  
 
